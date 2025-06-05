@@ -17,3 +17,9 @@
 ## 0.0.4
 - Function `generate_password` renamed to `generate_string`
 - Calculate and display Shannon and password entropy for generated strings
+
+## 0.0.5
+- Option `-h` renamed to `-x`
+- `-h/--help` now available for help output
+- Length displayed when using `-r STRING`
+- Help shown on parameter errors
