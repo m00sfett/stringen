@@ -76,12 +76,19 @@ def generate_string(length: int, charset: str) -> str:
 
 
 def generate_string_mixed(length: int, groups: list[str]) -> str:
-    """Generate a string ensuring at least one character from each group."""
+    """Generate a string from multiple groups.
+
+    When ``length`` is at least the number of groups, ensure the result contains
+    one character from each group. Otherwise, select random characters from the
+    combined set.
+    """
     if not groups:
         return ""
     all_chars = "".join(groups)
+    if length < len(groups):
+        return generate_string(length, all_chars)
     result = [secrets.choice(group) for group in groups]
-    for _ in range(max(length - len(groups), 0)):
+    for _ in range(length - len(groups)):
         result.append(secrets.choice(all_chars))
     secrets.SystemRandom().shuffle(result)
     return "".join(result)
