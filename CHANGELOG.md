@@ -1,4 +1,8 @@
 # Changelog
+## 0.1.1
+- Validate the length argument as a positive integer
+- Hexadecimal mode uses random case when `-a` and `-A` are both omitted or both present
+- Added automated tests and password guidance
 
 ## 0.1.0
 - Always show length in output
