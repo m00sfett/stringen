@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import logging
 import sys
 
 from . import __version__
@@ -13,6 +14,8 @@ from .utils import (
     positive_int,
     shannon_entropy,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class HelpOnErrorParser(argparse.ArgumentParser):
@@ -92,17 +95,21 @@ def parse_args(
 
 def main() -> None:
     """Entry point for the command line interface."""
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setFormatter(logging.Formatter("%(message)s"))
+    logger.handlers = [handler]
+    logger.setLevel(logging.INFO)
     args, parser = parse_args()
     if args.entropy is not None:
         text_length = len(args.entropy)
         sh_entropy = shannon_entropy(args.entropy)
         pw_entropy = password_entropy(args.entropy)
         if args.clean:
-            print(f"{pw_entropy:.2f}")
+            logger.info(f"{pw_entropy:.2f}")
             return
-        print(f"Length: {text_length}")
-        print(f"Shannon entropy: {sh_entropy:.2f} bits")
-        print(f"Password entropy: {pw_entropy:.2f} bits")
+        logger.info(f"Length: {text_length}")
+        logger.info(f"Shannon entropy: {sh_entropy:.2f} bits")
+        logger.info(f"Password entropy: {pw_entropy:.2f} bits")
         return
 
     charset = build_charset(args)
@@ -111,13 +118,13 @@ def main() -> None:
 
     result = generate_string(args.length, charset)
     if args.clean:
-        print(result)
+        logger.info(result)
         return
     result_length = len(result)
     sh_entropy = shannon_entropy(result)
     pw_entropy = password_entropy(result)
-    print(result)
-    print(f"Length: {result_length}")
-    print(f"Shannon entropy: {sh_entropy:.2f} bits")
-    print(f"Password entropy: {pw_entropy:.2f} bits")
+    logger.info(result)
+    logger.info(f"Length: {result_length}")
+    logger.info(f"Shannon entropy: {sh_entropy:.2f} bits")
+    logger.info(f"Password entropy: {pw_entropy:.2f} bits")
 
