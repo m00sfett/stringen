@@ -1,10 +1,29 @@
 import string
 import sys
-import os
+import importlib.util
+from pathlib import Path
 import pytest
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from stringen.__main__ import parse_args, build_charset, main, password_entropy
+ROOT = Path(__file__).resolve().parents[1]
+
+cli_spec = importlib.util.spec_from_file_location(
+    'stringen.cli',
+    ROOT / 'stringen' / 'cli.py',
+)
+cli = importlib.util.module_from_spec(cli_spec)
+cli_spec.loader.exec_module(cli)
+
+utils_spec = importlib.util.spec_from_file_location(
+    'stringen.utils',
+    ROOT / 'stringen' / 'utils.py',
+)
+utils = importlib.util.module_from_spec(utils_spec)
+utils_spec.loader.exec_module(utils)
+
+parse_args = cli.parse_args
+main = cli.main
+build_charset = utils.build_charset
+password_entropy = utils.password_entropy
 
 
 def test_length_validation():

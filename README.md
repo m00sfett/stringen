@@ -1,8 +1,17 @@
-# stringen (v0.1.2)
+# stringen (v0.2.0)
 
 A simple command line string generator written in Python. If no character set
 is selected, lowercase letters, uppercase letters and digits are used by
 default. The generated string length defaults to 12 characters.
+
+## Running
+
+No installation is required. Execute the tool directly from the project
+directory:
+
+```shell
+python -m stringen --help
+```
 
 ## Features
 
@@ -11,6 +20,7 @@ default. The generated string length defaults to 12 characters.
 - Optional digits (`-i`)
 - Hexadecimal output (`-x`) respecting `-a`/`-A` for case
 - Help available via `-h`/`--help`
+- Version information via `-V`/`--version`
 - Configurable string length via positional `NUMBER`
 - Displays length, Shannon and password entropy of the generated string
 - Calculate the length and entropies for an arbitrary string via `-r STRING`
@@ -30,5 +40,5 @@ python -m stringen -x 32
 python -m stringen -c -r hr5A8nPf5
 ```
 
-For secure password generation, choose a sufficiently long length. Short strings
-offer little entropy and are easier to guess.
+For secure password generation, choose a sufficiently long length.
+Short strings offer little entropy and are easier to guess.
