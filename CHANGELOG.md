@@ -1,4 +1,9 @@
 # Changelog
+## 0.2.1
+- CLI output now uses the ``logging`` module
+- Expanded README with an explanation of entropy values
+- Tests import modules normally and include docstrings
+
 ## 0.2.0
 - CLI moved to new ``stringen.cli`` module with typed functions
 - Utility helpers moved to ``stringen.utils``

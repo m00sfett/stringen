@@ -1,4 +1,4 @@
-# stringen (v0.2.0)
+# stringen (v0.2.1)
 
 A simple command line string generator written in Python. If no character set
 is selected, lowercase letters, uppercase letters and digits are used by
@@ -39,6 +39,14 @@ python -m stringen -r hr5A8nPf5
 python -m stringen -x 32
 python -m stringen -c -r hr5A8nPf5
 ```
+
+## Entropy
+
+The tool reports Shannon entropy and password entropy for both generated and
+provided strings. *Shannon entropy* measures the average information contained
+in the string, while *password entropy* estimates how strong a password is based
+on its length and character set size. Both values are given in bits&mdash;higher
+numbers indicate a harder to guess string.
 
 For secure password generation, choose a sufficiently long length.
 Short strings offer little entropy and are easier to guess.

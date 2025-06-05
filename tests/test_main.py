@@ -1,37 +1,21 @@
+"""Tests for the stringen command line interface and utilities."""
+
 import string
 import sys
-import importlib.util
-from pathlib import Path
 import pytest
 
-ROOT = Path(__file__).resolve().parents[1]
-
-cli_spec = importlib.util.spec_from_file_location(
-    'stringen.cli',
-    ROOT / 'stringen' / 'cli.py',
-)
-cli = importlib.util.module_from_spec(cli_spec)
-cli_spec.loader.exec_module(cli)
-
-utils_spec = importlib.util.spec_from_file_location(
-    'stringen.utils',
-    ROOT / 'stringen' / 'utils.py',
-)
-utils = importlib.util.module_from_spec(utils_spec)
-utils_spec.loader.exec_module(utils)
-
-parse_args = cli.parse_args
-main = cli.main
-build_charset = utils.build_charset
-password_entropy = utils.password_entropy
+from stringen.cli import parse_args, main
+from stringen.utils import build_charset, password_entropy
 
 
 def test_length_validation():
+    """parse_args exits when an invalid length is provided."""
     with pytest.raises(SystemExit):
         parse_args(['0'])
 
 
 def test_default_charset():
+    """build_charset returns the default set when no flags are given."""
     args, _ = parse_args([])
     charset = build_charset(args)
     expected = string.ascii_lowercase + string.ascii_uppercase + string.digits
@@ -39,35 +23,41 @@ def test_default_charset():
 
 
 def test_hex_random_case_no_flags():
+    """Hex output uses mixed case when neither -a nor -A is provided."""
     args, _ = parse_args(['-x'])
     charset = build_charset(args)
     assert charset == string.digits + 'abcdefABCDEF'
 
 
 def test_hex_random_case_both_flags():
+    """Hex output also uses mixed case when -a and -A are combined."""
     args, _ = parse_args(['-x', '-a', '-A'])
     charset = build_charset(args)
     assert charset == string.digits + 'abcdefABCDEF'
 
 
 def test_hex_lowercase_only():
+    """Hex output respects -a for lowercase only."""
     args, _ = parse_args(['-x', '-a'])
     charset = build_charset(args)
     assert charset == string.digits + 'abcdef'
 
 
 def test_hex_uppercase_only():
+    """Hex output respects -A for uppercase only."""
     args, _ = parse_args(['-x', '-A'])
     charset = build_charset(args)
     assert charset == string.digits + 'ABCDEF'
 
 
 def test_clean_flag_parsing():
+    """The -c flag is parsed correctly."""
     args, _ = parse_args(['-c'])
     assert args.clean is True
 
 
 def test_main_clean_generation(monkeypatch, capsys):
+    """Main outputs only the generated string when -c is used."""
     monkeypatch.setattr(sys, 'argv', ['stringen', '-c', '5'])
     main()
     captured = capsys.readouterr()
@@ -77,6 +67,7 @@ def test_main_clean_generation(monkeypatch, capsys):
 
 
 def test_main_clean_entropy(monkeypatch, capsys):
+    """Main prints only the password entropy in clean mode."""
     monkeypatch.setattr(sys, 'argv', ['stringen', '-c', '-r', 'abc'])
     main()
     captured = capsys.readouterr()
