@@ -99,6 +99,14 @@ def parse_args(
         help="display only the generated password or entropy",
     )
     parser.add_argument(
+        "-f",
+        "--file",
+        nargs="?",
+        const=".",
+        metavar="FILE",
+        help="read input from or write output to FILE (default: .)",
+    )
+    parser.add_argument(
         "-V",
         "--version",
         action="version",
@@ -122,7 +130,9 @@ def main() -> None:
     logger.handlers = [handler]
     logger.setLevel(logging.INFO)
     args, parser = parse_args()
-    if args.entropy is not None:
+    if args.entropy is not None and args.file is None:
+        if any(ord(ch) < 32 or ord(ch) > 126 for ch in args.entropy):
+            parser.error("illegal characters")
         text_length = len(args.entropy)
         sh_entropy = shannon_entropy(args.entropy)
         pw_entropy = password_entropy(args.entropy)
@@ -136,6 +146,28 @@ def main() -> None:
         logger.info(f"Recognized base: {base}")
         return
 
+    if args.file is not None and args.entropy is not None:
+        try:
+            with open(args.file, "r", encoding="utf-8") as fh:
+                lines = [line.rstrip("\n") for line in fh]
+        except OSError as exc:
+            parser.error(str(exc))
+        for line in lines:
+            if any(ord(ch) < 32 or ord(ch) > 126 for ch in line):
+                parser.error("illegal characters")
+            text_length = len(line)
+            sh_entropy = shannon_entropy(line)
+            pw_entropy = password_entropy(line)
+            base = recognized_base(line)
+            if args.clean:
+                logger.info(f"{pw_entropy:.2f}")
+            else:
+                logger.info(f"Length: {text_length}")
+                logger.info(f"Shannon entropy: {sh_entropy:.2f} bits")
+                logger.info(f"Password entropy: {pw_entropy:.2f} bits")
+                logger.info(f"Recognized base: {base}")
+        return
+
     charset = build_charset(args)
     if not charset:
         parser.error(
@@ -143,6 +175,23 @@ def main() -> None:
         )
 
     result = generate_string(args.length, charset)
+    if args.file is not None:
+        try:
+            with open(args.file, "w", encoding="utf-8") as fh:
+                fh.write(result)
+        except OSError as exc:
+            parser.error(str(exc))
+        if args.clean:
+            return
+        result_length = len(result)
+        sh_entropy = shannon_entropy(result)
+        pw_entropy = password_entropy(result)
+        base = recognized_base(result)
+        logger.info(f"Length: {result_length}")
+        logger.info(f"Shannon entropy: {sh_entropy:.2f} bits")
+        logger.info(f"Password entropy: {pw_entropy:.2f} bits")
+        logger.info(f"Recognized base: {base}")
+        return
     if args.clean:
         logger.info(result)
         return

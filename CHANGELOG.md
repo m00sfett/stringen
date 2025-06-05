@@ -1,4 +1,7 @@
 # Changelog
+## 0.3.2
+- Read and write strings via `-f [FILE]`
+- Abort on illegal characters in provided strings
 ## 0.3.1
 - Display recognized numeric base in output
 

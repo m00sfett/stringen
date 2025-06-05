@@ -83,6 +83,18 @@ def test_clean_flag_parsing():
     assert args.clean is True
 
 
+def test_file_argument_default():
+    """Using -f without a path defaults to the current directory."""
+    args, _ = parse_args(['-f'])
+    assert args.file == '.'
+
+
+def test_file_argument_value():
+    """The -f option accepts a custom file path."""
+    args, _ = parse_args(['-f', 'foo.txt'])
+    assert args.file == 'foo.txt'
+
+
 def test_main_clean_generation(monkeypatch, capsys):
     """Main outputs only the generated string when -c is used."""
     monkeypatch.setattr(sys, 'argv', ['stringen', '-c', '5'])
@@ -126,3 +138,44 @@ def test_main_base_output_generation(monkeypatch, capsys):
     captured = capsys.readouterr()
     lines = captured.out.strip().splitlines()
     assert lines[-1] == 'Recognized base: 2'
+
+
+def test_main_entropy_from_file(monkeypatch, tmp_path, capsys):
+    """Entropy is calculated for each line in the file."""
+    p = tmp_path / 'input.txt'
+    p.write_text('abc\n1010\n')
+    monkeypatch.setattr(sys, 'argv', ['stringen', '-r', 'ignored', '-f', str(p)])
+    main()
+    captured = capsys.readouterr()
+    lines = [l for l in captured.out.strip().splitlines() if l]
+    assert 'Recognized base: 16' in lines
+    assert 'Recognized base: 2' in lines
+
+
+def test_main_generation_to_file(monkeypatch, tmp_path, capsys):
+    """Generated strings are written to the file when -f is used."""
+    out = tmp_path / 'out.txt'
+    monkeypatch.setattr(sys, 'argv', ['stringen', '-f', str(out), '5'])
+    main()
+    text = out.read_text().strip()
+    assert len(text) == 5
+    captured = capsys.readouterr()
+    lines = captured.out.strip().splitlines()
+    assert 'Length:' in lines[0]
+
+
+def test_main_illegal_char_cli(monkeypatch):
+    """Non printable characters in -r abort the program."""
+    monkeypatch.setattr(sys, 'argv', ['stringen', '-r', 'abc\x01'])
+    with pytest.raises(SystemExit):
+        main()
+
+
+def test_main_illegal_char_file(monkeypatch, tmp_path):
+    """Non printable characters in input file abort the program."""
+    p = tmp_path / 'bad.txt'
+    p.write_text('abc\x01\n')
+    monkeypatch.setattr(sys, 'argv', ['stringen', '-r', 'ignored', '-f', str(p)])
+    with pytest.raises(SystemExit):
+        main()
+
