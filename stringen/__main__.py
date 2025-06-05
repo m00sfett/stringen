@@ -6,7 +6,18 @@ import secrets
 from collections import Counter
 
 
-def parse_args():
+def positive_int(value: str) -> int:
+    """Return a positive integer or raise ``ArgumentTypeError``."""
+    try:
+        ivalue = int(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(str(exc))
+    if ivalue <= 0:
+        raise argparse.ArgumentTypeError("length must be a positive integer")
+    return ivalue
+
+
+def parse_args(arguments=None):
     """Parse command line arguments."""
     class HelpOnErrorParser(argparse.ArgumentParser):
         def error(self, message):
@@ -25,27 +36,33 @@ def parse_args():
                         help='output hexadecimal string (uses -a/-A for case)')
     parser.add_argument('-r', '--entropy', metavar='STRING',
                         help='calculate entropies for STRING and exit')
-    parser.add_argument('length', type=int, nargs='?', default=12,
+    parser.add_argument('length', type=positive_int, nargs='?', default=12,
                         help='length of the generated string')
-    return parser.parse_args(), parser
+    return parser.parse_args(arguments), parser
 
 
 def build_charset(args):
-    """Build a string of characters based on provided flags."""
+    """Return a character set string based on provided flags."""
     if args.hex:
-        if not (args.lower or args.upper):
-            args.lower = True
-        return string.digits + ("ABCDEF" if args.upper else "abcdef")
+        if args.lower and not args.upper:
+            return string.digits + "abcdef"
+        if args.upper and not args.lower:
+            return string.digits + "ABCDEF"
+        return string.digits + "abcdefABCDEF"
 
     if not (args.lower or args.upper or args.digits):
-        args.lower = args.upper = args.digits = True
+        use_lower = use_upper = use_digits = True
+    else:
+        use_lower = args.lower
+        use_upper = args.upper
+        use_digits = args.digits
 
     charset = ''
-    if args.lower:
+    if use_lower:
         charset += string.ascii_lowercase
-    if args.upper:
+    if use_upper:
         charset += string.ascii_uppercase
-    if args.digits:
+    if use_digits:
         charset += string.digits
     return charset
 
