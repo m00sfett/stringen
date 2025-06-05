@@ -1,4 +1,5 @@
 import argparse
+import sys
 import math
 import string
 import secrets
@@ -7,15 +8,20 @@ from collections import Counter
 
 def parse_args():
     """Parse command line arguments."""
-    parser = argparse.ArgumentParser(description="Simple string generator", add_help=False)
-    parser.add_argument('--help', action='help', help='show this help message and exit')
+    class HelpOnErrorParser(argparse.ArgumentParser):
+        def error(self, message):
+            self.print_help(sys.stderr)
+            self.exit(2, f"{self.prog}: error: {message}\n")
+
+    parser = HelpOnErrorParser(description="Simple string generator", add_help=False)
+    parser.add_argument('-h', '--help', action='help', help='show this help message and exit')
     parser.add_argument('-a', '--lower', action='store_true',
                         help='include lowercase letters (a-z)')
     parser.add_argument('-A', '--upper', action='store_true',
                         help='include uppercase letters (A-Z)')
     parser.add_argument('-i', '--digits', action='store_true',
                         help='include digits (0-9)')
-    parser.add_argument('-h', '--hex', action='store_true',
+    parser.add_argument('-x', '--hex', action='store_true',
                         help='output hexadecimal string (uses -a/-A for case)')
     parser.add_argument('-r', '--entropy', metavar='STRING',
                         help='calculate entropies for STRING and exit')
@@ -81,14 +87,16 @@ def password_entropy(text):
 def main():
     args, parser = parse_args()
     if args.entropy is not None:
+        text_length = len(args.entropy)
         sh_entropy = shannon_entropy(args.entropy)
         pw_entropy = password_entropy(args.entropy)
+        print(f"Length: {text_length}")
         print(f"Shannon entropy: {sh_entropy:.2f} bits")
         print(f"Password entropy: {pw_entropy:.2f} bits")
         return
     charset = build_charset(args)
     if not charset:
-        parser.error('No character set selected. Use -a, -A, -i or -h')
+        parser.error('No character set selected. Use -a, -A, -i or -x')
     result = generate_string(args.length, charset)
     sh_entropy = shannon_entropy(result)
     pw_entropy = password_entropy(result)
