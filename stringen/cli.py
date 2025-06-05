@@ -170,7 +170,7 @@ def main() -> None:
             f"Shannon entropy: {sh_entropy:.2f} bits/char ({sh_total:.2f} bits total)"
         )
         logger.info(f"Password entropy: {pw_entropy:.2f} bits")
-        logger.info(f"Recognized base: {base}")
+        logger.info(f"Base: {base}")
         return
 
     if args.file is not None and args.entropy is not None:
