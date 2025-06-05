@@ -10,6 +10,7 @@ from . import __version__
 from .utils import (
     build_charset,
     generate_string,
+    recognized_base,
     password_entropy,
     positive_int,
     shannon_entropy,
@@ -125,12 +126,14 @@ def main() -> None:
         text_length = len(args.entropy)
         sh_entropy = shannon_entropy(args.entropy)
         pw_entropy = password_entropy(args.entropy)
+        base = recognized_base(args.entropy)
         if args.clean:
             logger.info(f"{pw_entropy:.2f}")
             return
         logger.info(f"Length: {text_length}")
         logger.info(f"Shannon entropy: {sh_entropy:.2f} bits")
         logger.info(f"Password entropy: {pw_entropy:.2f} bits")
+        logger.info(f"Recognized base: {base}")
         return
 
     charset = build_charset(args)
@@ -146,8 +149,10 @@ def main() -> None:
     result_length = len(result)
     sh_entropy = shannon_entropy(result)
     pw_entropy = password_entropy(result)
+    base = recognized_base(result)
     logger.info(result)
     logger.info(f"Length: {result_length}")
     logger.info(f"Shannon entropy: {sh_entropy:.2f} bits")
     logger.info(f"Password entropy: {pw_entropy:.2f} bits")
+    logger.info(f"Recognized base: {base}")
 

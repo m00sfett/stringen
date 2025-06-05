@@ -67,22 +67,29 @@ def shannon_entropy(text: str) -> float:
     )
 
 
+def recognized_base(text: str) -> int:
+    """Return recognized numeric base of the given text."""
+    if not text:
+        return 0
+    hex_chars = set("0123456789abcdefABCDEF")
+    text_set = set(text)
+    if text_set <= hex_chars and any(c.isalpha() for c in text):
+        return 16
+    if text_set <= {"0", "1"}:
+        return 2
+    if text_set <= set("01234567"):
+        return 8
+    if text_set <= set(string.digits):
+        return 10
+    return 0
+
+
 def password_entropy(text: str) -> float:
     """Return password entropy based on character set size and length."""
     if not text:
         return 0.0
-    hex_chars = set("0123456789abcdefABCDEF")
-    text_set = set(text)
-    if text_set <= hex_chars and any(c.isalpha() for c in text):
-        charset = 16
-    elif text_set <= {"0", "1"}:
-        charset = 2
-    elif text_set <= set("01234567"):
-        charset = 8
-    elif text_set <= set(string.digits):
-        charset = 10
-    else:
-        charset = 0
+    charset = recognized_base(text)
+    if charset == 0:
         if any(c.islower() for c in text):
             charset += 26
         if any(c.isupper() for c in text):

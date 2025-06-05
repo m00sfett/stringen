@@ -1,4 +1,7 @@
 # Changelog
+## 0.3.1
+- Display recognized numeric base in output
+
 ## 0.3.0
 - Added aliases `-10`/`--dec` for decimal digits
 - Added aliases `-16` for hexadecimal output

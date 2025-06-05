@@ -5,7 +5,7 @@ import sys
 import pytest
 
 from stringen.cli import parse_args, main
-from stringen.utils import build_charset, password_entropy
+from stringen.utils import build_charset, password_entropy, recognized_base
 
 
 def test_length_validation():
@@ -100,3 +100,29 @@ def test_main_clean_entropy(monkeypatch, capsys):
     captured = capsys.readouterr()
     expected = f"{password_entropy('abc'):.2f}"
     assert captured.out.strip() == expected
+
+
+def test_recognized_base():
+    """recognized_base identifies standard numeric bases."""
+    assert recognized_base('1010') == 2
+    assert recognized_base('123') == 8
+    assert recognized_base('7ab') == 16
+    assert recognized_base('abc') == 16
+
+
+def test_main_base_output_entropy(monkeypatch, capsys):
+    """Base information is the last line when using -r."""
+    monkeypatch.setattr(sys, 'argv', ['stringen', '-r', '1010'])
+    main()
+    captured = capsys.readouterr()
+    lines = captured.out.strip().splitlines()
+    assert lines[-1] == 'Recognized base: 2'
+
+
+def test_main_base_output_generation(monkeypatch, capsys):
+    """Base information is the last line when generating a string."""
+    monkeypatch.setattr(sys, 'argv', ['stringen', '-b', '4'])
+    main()
+    captured = capsys.readouterr()
+    lines = captured.out.strip().splitlines()
+    assert lines[-1] == 'Recognized base: 2'
