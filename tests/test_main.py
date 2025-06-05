@@ -184,7 +184,7 @@ def test_main_entropy_from_file(monkeypatch, tmp_path, capsys):
     """Entropy is calculated for each line in the file."""
     p = tmp_path / 'input.txt'
     p.write_text('abc\n1010\n')
-    monkeypatch.setattr(sys, 'argv', ['stringen', '-r', 'ignored', '-f', str(p)])
+    monkeypatch.setattr(sys, 'argv', ['stringen', '-r', '-f', str(p)])
     main()
     captured = capsys.readouterr()
     lines = [l for l in captured.out.strip().splitlines() if l]
@@ -215,7 +215,7 @@ def test_main_illegal_char_file(monkeypatch, tmp_path):
     """Non printable characters in input file abort the program."""
     p = tmp_path / 'bad.txt'
     p.write_text('abc\x01\n')
-    monkeypatch.setattr(sys, 'argv', ['stringen', '-r', 'ignored', '-f', str(p)])
+    monkeypatch.setattr(sys, 'argv', ['stringen', '-r', '-f', str(p)])
     with pytest.raises(SystemExit):
         main()
 
