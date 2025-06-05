@@ -111,6 +111,9 @@ def password_entropy(text: str) -> float:
             charset += 26
         if any(c.isdigit() for c in text):
             charset += 10
+        # Account for special characters by counting the unique symbols
+        specials = {c for c in text if not c.isalnum()}
+        charset += len(specials)
     if charset == 0:
         return 0.0
     return len(text) * math.log2(charset)

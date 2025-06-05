@@ -3,6 +3,7 @@
 import string
 import sys
 from pathlib import Path
+import math
 import pytest
 
 from stringen.cli import parse_args, main
@@ -153,6 +154,12 @@ def test_recognized_base():
     assert recognized_base('123') == 8
     assert recognized_base('7ab') == 16
     assert recognized_base('abc') == 16
+
+
+def test_password_entropy_special_chars():
+    """password_entropy counts unique special characters."""
+    result = password_entropy('!@#$')
+    assert result == pytest.approx(len('!@#$') * math.log2(4))
 
 
 def test_main_base_output_entropy(monkeypatch, capsys):
