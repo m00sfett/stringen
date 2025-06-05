@@ -24,6 +24,8 @@ python -m stringen --help
 - Optional uppercase letters (`-A`)
 - Optional Hexadecimal output (`-x`/`-16`/`--hex`) respecting `-a`/`-A` for case
 - Hexadecimal mode uses random case when `-a` and `-A` are both omitted or both present
+- When mixed case is allowed, the hex digits `a-f`/`A-F` and `0-9` form a 22-symbol
+  pool, so digits occur slightly less often than in standard hex
 - Optional special characters (`-s [STRING|CHARSET_FILE]`, defaults to `charsets/special_charset_default.txt`)
 - Read input from or write output to a file via `-f [FILE]`
 - Aborts when the provided string contains non-printable characters

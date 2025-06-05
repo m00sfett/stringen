@@ -227,3 +227,11 @@ def test_main_illegal_char_file(monkeypatch, tmp_path):
     with pytest.raises(SystemExit):
         main()
 
+
+def test_main_length_shorter_than_groups(monkeypatch, capsys):
+    """When length is less than the groups, output still has requested length."""
+    monkeypatch.setattr(sys, 'argv', ['stringen', '-a', '-A', '-i', '2'])
+    main()
+    out = capsys.readouterr().out.strip()
+    assert len(out.splitlines()[0]) == 2
+
