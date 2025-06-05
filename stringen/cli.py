@@ -139,6 +139,8 @@ def parse_args(
     processed: list[str] = []
     for arg in arguments:
         if arg == "-rf":
+            # Allow the short option combination "-rf" to behave like
+            # passing "-r" and "-f" separately.
             processed.extend(["-r", "-f"])
         else:
             processed.append(arg)

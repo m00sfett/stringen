@@ -107,7 +107,12 @@ def shannon_entropy(text: str) -> float:
 
 
 def recognized_base(text: str) -> int:
-    """Return recognized numeric base of the given text."""
+    """Return recognized numeric base of the given text.
+
+    The smallest base capable of representing all characters is returned.
+    Hexadecimal is only detected when letters ``a``-``f`` or ``A``-``F`` are
+    present.
+    """
     if not text:
         return 0
     hex_chars = set("0123456789abcdefABCDEF")
