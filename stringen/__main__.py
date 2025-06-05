@@ -17,8 +17,10 @@ def parse_args():
                         help='include digits (0-9)')
     parser.add_argument('-h', '--hex', action='store_true',
                         help='output hexadecimal string (uses -a/-A for case)')
-    parser.add_argument('-c', '--count', type=int, default=12,
-                        help='length of the password')
+    parser.add_argument('-r', '--entropy', metavar='STRING',
+                        help='calculate entropy for STRING and exit')
+    parser.add_argument('length', type=int, nargs='?', default=12,
+                        help='length of the generated string')
     return parser.parse_args(), parser
 
 
@@ -56,12 +58,38 @@ def shannon_entropy(text):
     return -sum((count / length) * math.log2(count / length) for count in freq.values())
 
 
+def password_entropy(text):
+    """Return password entropy based on character set size and length."""
+    if not text:
+        return 0.0
+    hex_chars = set('0123456789abcdefABCDEF')
+    if all(c in hex_chars for c in text) and any(c.isalpha() for c in text):
+        charset = 16
+    else:
+        charset = 0
+        if any(c.islower() for c in text):
+            charset += 26
+        if any(c.isupper() for c in text):
+            charset += 26
+        if any(c.isdigit() for c in text):
+            charset += 10
+    if charset == 0:
+        return 0.0
+    return len(text) * math.log2(charset)
+
+
 def main():
     args, parser = parse_args()
+    if args.entropy is not None:
+        sh_entropy = shannon_entropy(args.entropy)
+        pw_entropy = password_entropy(args.entropy)
+        print(f"Shannon entropy: {sh_entropy:.2f} bits")
+        print(f"Password entropy: {pw_entropy:.2f} bits")
+        return
     charset = build_charset(args)
     if not charset:
         parser.error('No character set selected. Use -a, -A, -i or -h')
-    password = generate_password(args.count, charset)
+    password = generate_password(args.length, charset)
     entropy = shannon_entropy(password)
     print(password)
     print(f"Entropy: {entropy:.2f} bits")
