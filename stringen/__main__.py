@@ -98,9 +98,11 @@ def main():
     if not charset:
         parser.error('No character set selected. Use -a, -A, -i or -x')
     result = generate_string(args.length, charset)
+    result_length = len(result)
     sh_entropy = shannon_entropy(result)
     pw_entropy = password_entropy(result)
     print(result)
+    print(f"Length: {result_length}")
     print(f"Shannon entropy: {sh_entropy:.2f} bits")
     print(f"Password entropy: {pw_entropy:.2f} bits")
 
