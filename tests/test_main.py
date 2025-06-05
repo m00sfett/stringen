@@ -50,6 +50,33 @@ def test_hex_uppercase_only():
     assert charset == string.digits + 'ABCDEF'
 
 
+def test_digits_aliases():
+    """The -10/--dec flags map to digits."""
+    args1, _ = parse_args(['-10'])
+    args2, _ = parse_args(['--dec'])
+    assert args1.digits and args2.digits
+
+
+def test_hex_alias():
+    """The -16 flag maps to hexadecimal output."""
+    args, _ = parse_args(['-16'])
+    assert args.hex is True
+
+
+def test_binary_charset():
+    """Binary mode uses only 0 and 1."""
+    args, _ = parse_args(['-b'])
+    charset = build_charset(args)
+    assert charset == '01'
+
+
+def test_octal_charset():
+    """Octal mode uses digits 0-7."""
+    args, _ = parse_args(['-o'])
+    charset = build_charset(args)
+    assert charset == '01234567'
+
+
 def test_clean_flag_parsing():
     """The -c flag is parsed correctly."""
     args, _ = parse_args(['-c'])

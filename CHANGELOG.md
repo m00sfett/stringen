@@ -1,4 +1,9 @@
 # Changelog
+## 0.3.0
+- Added aliases `-10`/`--dec` for decimal digits
+- Added aliases `-16` for hexadecimal output
+- Added binary (`-b`/`-2`/`--bin`) and octal (`-o`/`-8`/`--oct`) modes
+- Password entropy now recognizes binary, octal and decimal strings
 ## 0.2.1
 - CLI output now uses the ``logging`` module
 - Expanded README with an explanation of entropy values

@@ -1,4 +1,4 @@
-# stringen (v0.2.1)
+# stringen (v0.3.0)
 
 A simple command line string generator written in Python. If no character set
 is selected, lowercase letters, uppercase letters and digits are used by
@@ -17,8 +17,10 @@ python -m stringen --help
 
 - Optional lowercase letters (`-a`)
 - Optional uppercase letters (`-A`)
-- Optional digits (`-i`)
-- Hexadecimal output (`-x`) respecting `-a`/`-A` for case
+- Optional digits (`-i`, `-10`, `--dec`)
+- Binary output (`-b`/`-2`/`--bin`)
+- Octal output (`-o`/`-8`/`--oct`)
+- Hexadecimal output (`-x`/`-16`/`--hex`) respecting `-a`/`-A` for case
 - Help available via `-h`/`--help`
 - Version information via `-V`/`--version`
 - Configurable string length via positional `NUMBER`
@@ -35,6 +37,8 @@ python -m stringen --help
 python -m stringen --help
 python -m stringen -a -A -i 16
 python -m stringen -aAi 8
+python -m stringen -b 16
+python -m stringen -o 12
 python -m stringen -r hr5A8nPf5
 python -m stringen -x 32
 python -m stringen -c -r hr5A8nPf5

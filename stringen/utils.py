@@ -28,6 +28,10 @@ def build_charset(args: argparse.Namespace) -> str:
         if args.upper and not args.lower:
             return string.digits + "ABCDEF"
         return string.digits + "abcdefABCDEF"
+    if args.bin:
+        return "01"
+    if args.oct:
+        return "01234567"
 
     if not (args.lower or args.upper or args.digits):
         use_lower = use_upper = use_digits = True
@@ -68,8 +72,15 @@ def password_entropy(text: str) -> float:
     if not text:
         return 0.0
     hex_chars = set("0123456789abcdefABCDEF")
-    if all(c in hex_chars for c in text) and any(c.isalpha() for c in text):
+    text_set = set(text)
+    if text_set <= hex_chars and any(c.isalpha() for c in text):
         charset = 16
+    elif text_set <= {"0", "1"}:
+        charset = 2
+    elif text_set <= set("01234567"):
+        charset = 8
+    elif text_set <= set(string.digits):
+        charset = 10
     else:
         charset = 0
         if any(c.islower() for c in text):
