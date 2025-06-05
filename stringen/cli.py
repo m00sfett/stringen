@@ -177,17 +177,13 @@ def main() -> None:
         try:
             with open(args.file, "r", encoding="utf-8") as fh:
                 lines = [line.rstrip("\n") for line in fh]
+                lines = [ln for ln in lines if ln]
         except OSError as exc:
             parser.error(str(exc))
-        if args.clean:
-            for line in lines:
-                if any(ord(ch) < 32 or ord(ch) > 126 for ch in line):
-                    parser.error("illegal characters")
-                pw_entropy = password_entropy(line)
-                logger.info(f"{pw_entropy:.2f}")
-            return
         logger.info(f"read from file {args.file}:")
-        for line in lines:
+        for idx, line in enumerate(lines, start=1):
+            if line == "":
+                continue
             if any(ord(ch) < 32 or ord(ch) > 126 for ch in line):
                 parser.error("illegal characters")
             text_length = len(line)
@@ -195,10 +191,9 @@ def main() -> None:
             sh_total = sh_entropy * text_length
             pw_entropy = password_entropy(line)
             base = recognized_base(line)
-            logger.info(f"string: {line}")
-            logger.info(
-                f"Length: {text_length}"
-            )
+            label = f"Line: {idx}" if args.clean else f"string: {line}"
+            logger.info(label)
+            logger.info(f"Length: {text_length}")
             logger.info(
                 f"Shannon entropy: {sh_entropy:.2f} bits/char ({sh_total:.2f} bits total)"
             )

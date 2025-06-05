@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.1
+
+- Skip empty lines when calculating entropy from files
+- Hide secrets when using -c with -f by replacing the string with a line indicator
+- Output label remains "Base" when calculating entropy directly
+
 ## 0.4.0
 
 - Added `-s/--spec` option for custom special characters
