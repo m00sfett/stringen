@@ -2,7 +2,8 @@
 
 A simple command line string generator written in Python. If no character set
 is selected, lowercase letters, uppercase letters and digits are used by
-default. The generated string length defaults to 12 characters.
+default. The generated string length defaults to 12 characters. Randomness
+is sourced via Python's `secrets` module for cryptographically secure values.
 
 ## Running
 
@@ -27,6 +28,9 @@ python -m stringen --help
 - When mixed case is allowed, the hex digits `a-f`/`A-F` and `0-9` form a 22-symbol
   pool, so digits occur slightly less often than in standard hex
 - Optional special characters (`-s [STRING|CHARSET_FILE]`, defaults to `charsets/special_charset_default.txt`)
+- Sample special character files are available in the `charsets/` directory
+- When multiple character groups are selected and the length permits, the output
+  includes at least one character from each group
 - Read input from or write output to a file via `-f [FILE]`
 - Aborts when the provided string contains non-printable characters
 - Displays length, Shannon and password entropy
@@ -70,6 +74,9 @@ python -m stringen -x 32
 # Include custom special characters
 python -m stringen -s '!@#' 10
 # > @!@!#!!@#!
+# Load special characters from a file
+python -m stringen -s charsets/special_charset1.txt 8
+# > $%!*&@#!
 
 # Print only the password entropy value
 python -m stringen -c -r hr5A8nPf5
@@ -81,6 +88,8 @@ python -m stringen -f output.txt 12
 
 # Read lines from a file to calculate their entropies
 python -m stringen -r -f input.txt
+# Same as -rf
+python -m stringen -rf input.txt
 # > read from file input.txt:
 # > string: password123
 # > Length: 11
