@@ -2,6 +2,7 @@
 
 import string
 import sys
+from pathlib import Path
 import pytest
 
 from stringen.cli import parse_args, main
@@ -75,6 +76,33 @@ def test_octal_charset():
     args, _ = parse_args(['-o'])
     charset = build_charset(args)
     assert charset == '01234567'
+
+
+def test_spec_string_charset():
+    """Special characters from a string are added to the charset."""
+    args, _ = parse_args(['-s', '!@'])
+    charset = build_charset(args)
+    expected = '!@'
+    assert charset == expected
+
+
+def test_spec_file_charset(tmp_path):
+    """Special characters can be loaded from a file."""
+    p = tmp_path / 'spec.txt'
+    p.write_text('!$')
+    args, _ = parse_args(['-s', str(p)])
+    charset = build_charset(args)
+    expected = '!$'
+    assert charset == expected
+
+
+def test_spec_default_file():
+    """Using -s without argument loads the default file."""
+    args, _ = parse_args(['-s'])
+    charset = build_charset(args)
+    default_path = Path(__file__).resolve().parent.parent / 'stringen' / 'special_charset_default.txt'
+    default_chars = default_path.read_text().strip()
+    assert charset == default_chars
 
 
 def test_clean_flag_parsing():

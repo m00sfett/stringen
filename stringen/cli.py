@@ -87,6 +87,17 @@ def parse_args(
         help="output octal string",
     )
     parser.add_argument(
+        "-s",
+        "--spec",
+        nargs="?",
+        const="",
+        metavar="STRING|FILE",
+        help=(
+            "include special characters from STRING or FILE "
+            "(default: special_charset_default.txt)"
+        ),
+    )
+    parser.add_argument(
         "-r",
         "--entropy",
         metavar="STRING",
@@ -168,7 +179,10 @@ def main() -> None:
                 logger.info(f"Recognized base: {base}")
         return
 
-    charset = build_charset(args)
+    try:
+        charset = build_charset(args)
+    except argparse.ArgumentTypeError as exc:
+        parser.error(str(exc))
     if not charset:
         parser.error(
             "No character set selected. Use -a, -A, -i/-10, -b, -o or -x"
