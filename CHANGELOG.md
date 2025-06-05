@@ -9,3 +9,11 @@
 - Default character set is now `-aAi` when no option is provided
 - Added hexadecimal output via `-h`
 - Shows Shannon entropy of the generated string
+
+## 0.0.3
+- Option `-c` replaced by positional length argument
+- Added `-r STRING` to display Shannon and password entropy of the given string
+
+## 0.0.4
+- Function `generate_password` renamed to `generate_string`
+- Calculate and display Shannon and password entropy for generated strings
