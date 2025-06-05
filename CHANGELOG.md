@@ -1,4 +1,10 @@
 # Changelog
+## 0.2.0
+- CLI moved to new ``stringen.cli`` module with typed functions
+- Utility helpers moved to ``stringen.utils``
+- Added ``-V/--version`` option
+- Tests use ``importlib`` to load modules
+
 ## 0.1.2
 - Added `-c/--clean` option for minimal output
 
