@@ -21,18 +21,21 @@ def positive_int(value: str) -> int:
     return ivalue
 
 
-def build_charset(args: argparse.Namespace) -> str:
-    """Return a character set string based on provided flags."""
+def build_charset(args: argparse.Namespace, *, as_groups: bool = False) -> str | list[str]:
+    """Return a character set string or list of character groups."""
     if args.hex:
-        if args.lower and not args.upper:
-            return string.digits + "abcdef"
-        if args.upper and not args.lower:
-            return string.digits + "ABCDEF"
-        return string.digits + "abcdefABCDEF"
+        charset = (
+            string.digits + "abcdef"
+            if args.lower and not args.upper
+            else string.digits + "ABCDEF"
+            if args.upper and not args.lower
+            else string.digits + "abcdefABCDEF"
+        )
+        return [charset] if as_groups else charset
     if args.bin:
-        return "01"
+        return ["01"] if as_groups else "01"
     if args.oct:
-        return "01234567"
+        return ["01234567"] if as_groups else "01234567"
 
     if not (args.lower or args.upper or args.digits or args.spec is not None):
         use_lower = use_upper = use_digits = True
@@ -41,13 +44,13 @@ def build_charset(args: argparse.Namespace) -> str:
         use_upper = args.upper
         use_digits = args.digits
 
-    charset = ""
+    groups: list[str] = []
     if use_lower:
-        charset += string.ascii_lowercase
+        groups.append(string.ascii_lowercase)
     if use_upper:
-        charset += string.ascii_uppercase
+        groups.append(string.ascii_uppercase)
     if use_digits:
-        charset += string.digits
+        groups.append(string.digits)
     if args.spec is not None:
         if args.spec == "":
             path = Path(__file__).resolve().parent / "charsets" / "special_charset_default.txt"
@@ -61,13 +64,27 @@ def build_charset(args: argparse.Namespace) -> str:
                 spec_chars = path.read_text(encoding="utf-8").strip()
         except OSError as exc:
             raise argparse.ArgumentTypeError(str(exc))
-        charset += spec_chars
-    return charset
+        groups.append(spec_chars)
+
+    charset = "".join(groups)
+    return groups if as_groups else charset
 
 
 def generate_string(length: int, charset: str) -> str:
     """Generate string of given length from charset using secrets."""
     return "".join(secrets.choice(charset) for _ in range(length))
+
+
+def generate_string_mixed(length: int, groups: list[str]) -> str:
+    """Generate a string ensuring at least one character from each group."""
+    if not groups:
+        return ""
+    all_chars = "".join(groups)
+    result = [secrets.choice(group) for group in groups]
+    for _ in range(max(length - len(groups), 0)):
+        result.append(secrets.choice(all_chars))
+    secrets.SystemRandom().shuffle(result)
+    return "".join(result)
 
 
 def shannon_entropy(text: str) -> float:
