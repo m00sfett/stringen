@@ -50,7 +50,7 @@ def build_charset(args: argparse.Namespace) -> str:
         charset += string.digits
     if args.spec is not None:
         if args.spec == "":
-            path = Path(__file__).with_name("special_charset_default.txt")
+            path = Path(__file__).resolve().parent / "charsets" / "special_charset_default.txt"
         else:
             p = Path(args.spec)
             path = p if p.is_file() else None

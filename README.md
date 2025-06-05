@@ -24,8 +24,8 @@ python -m stringen --help
 - Optional uppercase letters (`-A`)
 - Optional Hexadecimal output (`-x`/`-16`/`--hex`) respecting `-a`/`-A` for case
 - Hexadecimal mode uses random case when `-a` and `-A` are both omitted or both present
-- Optional special characters (`-s [STRING|CHARSET_FILE]`)
-- Read input or output from a file via `-f [FILE]`
+- Optional special characters (`-s [STRING|CHARSET_FILE]`, defaults to `charsets/special_charset_default.txt`)
+- Read input from or write output to a file via `-f [FILE]`
 - Aborts when the provided string contains non-printable characters
 - Displays length, Shannon and password entropy
 - Displays the recognized numeric base of the output
@@ -35,17 +35,39 @@ python -m stringen --help
 
 ## Usage
 
+Below are a few common invocation examples:
+
 ```shell
+# Show help and available options
 python -m stringen --help
+
+# Generate a 16 character password using letters and digits
 python -m stringen -a -A -i 16
+
+# Generate a password with only lowercase letters and digits
 python -m stringen -aAi 8
+
+# Binary and octal output
 python -m stringen -b 16
 python -m stringen -o 12
+
+# Display the entropy of an existing string
 python -m stringen -r hr5A8nPf5
+
+# Create a hexadecimal string
 python -m stringen -x 32
+
+# Include custom special characters
 python -m stringen -s '!@#' 10
+
+# Print only the entropy value
 python -m stringen -c -r hr5A8nPf5
+
+# Write the generated string to a file
 python -m stringen -f output.txt 12
+
+# Read lines from a file to calculate their entropies
+python -m stringen -r ignored -f input.txt
 ```
 
 ## Entropy

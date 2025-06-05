@@ -100,7 +100,12 @@ def test_spec_default_file():
     """Using -s without argument loads the default file."""
     args, _ = parse_args(['-s'])
     charset = build_charset(args)
-    default_path = Path(__file__).resolve().parent.parent / 'stringen' / 'special_charset_default.txt'
+    default_path = (
+        Path(__file__).resolve().parent.parent
+        / 'stringen'
+        / 'charsets'
+        / 'special_charset_default.txt'
+    )
     default_chars = default_path.read_text().strip()
     assert charset == default_chars
 
