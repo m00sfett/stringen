@@ -1,4 +1,8 @@
 # Changelog
+## 0.4.0
+- Added `-s/--spec` option for custom special characters
+- Included default and sample special character files
+
 ## 0.3.2
 - Read and write strings via `-f [FILE]`
 - Abort on illegal characters in provided strings

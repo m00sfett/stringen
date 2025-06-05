@@ -7,6 +7,7 @@ import math
 import secrets
 import string
 from collections import Counter
+from pathlib import Path
 
 
 def positive_int(value: str) -> int:
@@ -33,7 +34,7 @@ def build_charset(args: argparse.Namespace) -> str:
     if args.oct:
         return "01234567"
 
-    if not (args.lower or args.upper or args.digits):
+    if not (args.lower or args.upper or args.digits or args.spec is not None):
         use_lower = use_upper = use_digits = True
     else:
         use_lower = args.lower
@@ -47,6 +48,20 @@ def build_charset(args: argparse.Namespace) -> str:
         charset += string.ascii_uppercase
     if use_digits:
         charset += string.digits
+    if args.spec is not None:
+        if args.spec == "":
+            path = Path(__file__).with_name("special_charset_default.txt")
+        else:
+            p = Path(args.spec)
+            path = p if p.is_file() else None
+        try:
+            if path is None:
+                spec_chars = args.spec
+            else:
+                spec_chars = path.read_text(encoding="utf-8").strip()
+        except OSError as exc:
+            raise argparse.ArgumentTypeError(str(exc))
+        charset += spec_chars
     return charset
 
 
