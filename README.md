@@ -17,6 +17,8 @@ default. The generated string length defaults to 12 characters.
 ## Usage
 
 ```shell
+python -m stringen -h
 python -m stringen -a -A -i 16
+python -m stringen -aAi 8
 python -m stringen -r hr5A8nPf5
 ```
