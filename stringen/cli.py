@@ -94,7 +94,7 @@ def parse_args(
         metavar="STRING|FILE",
         help=(
             "include special characters from STRING or FILE "
-            "(default: special_charset_default.txt)"
+            "(default: charsets/special_charset_default.txt)"
         ),
     )
     parser.add_argument(
