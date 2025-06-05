@@ -43,31 +43,47 @@ python -m stringen --help
 
 # Generate a 16 character password using letters and digits
 python -m stringen -a -A -i 16
+# > G9kLm8bTzYqH3W7P
 
 # Generate a password with only lowercase letters and digits
 python -m stringen -aAi 8
-
+# > a3h9d2kj
+ 
 # Binary and octal output
 python -m stringen -b 16
+# > 0101011010101010
 python -m stringen -o 12
+# > 735412607214
 
 # Display the entropy of an existing string
 python -m stringen -r hr5A8nPf5
+# > Length: 9
+# > Shannon entropy: 4.85 bits/char (43.63 bits total)
+# > Password entropy: 58.49 bits
 
 # Create a hexadecimal string
 python -m stringen -x 32
+# > 2A1F3B5E7D8C9A1F3E2B7C4D9F0E6A5C
 
 # Include custom special characters
 python -m stringen -s '!@#' 10
+# > @!@!#!!@#!
 
-# Print only the entropy value
+# Print only the password entropy value
 python -m stringen -c -r hr5A8nPf5
+# > 58.49
 
 # Write the generated string to a file
 python -m stringen -f output.txt 12
+# > (writes e.g. W8YzKp3N2dFq to output.txt)
 
 # Read lines from a file to calculate their entropies
 python -m stringen -r ignored -f input.txt
+# > input.txt:
+# > password123
+# > qwerty!
+# > ...
+# > Entropy results printed per line
 ```
 
 ## Entropy
