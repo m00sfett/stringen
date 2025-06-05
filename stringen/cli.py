@@ -55,14 +55,35 @@ def parse_args(
     parser.add_argument(
         "-i",
         "--digits",
+        "-10",
+        "--dec",
+        dest="digits",
         action="store_true",
         help="include digits (0-9)",
     )
     parser.add_argument(
         "-x",
         "--hex",
+        "-16",
+        dest="hex",
         action="store_true",
         help="output hexadecimal string (uses -a/-A for case)",
+    )
+    parser.add_argument(
+        "-b",
+        "-2",
+        "--bin",
+        dest="bin",
+        action="store_true",
+        help="output binary string",
+    )
+    parser.add_argument(
+        "-o",
+        "-8",
+        "--oct",
+        dest="oct",
+        action="store_true",
+        help="output octal string",
     )
     parser.add_argument(
         "-r",
@@ -114,7 +135,9 @@ def main() -> None:
 
     charset = build_charset(args)
     if not charset:
-        parser.error("No character set selected. Use -a, -A, -i or -x")
+        parser.error(
+            "No character set selected. Use -a, -A, -i/-10, -b, -o or -x"
+        )
 
     result = generate_string(args.length, charset)
     if args.clean:
