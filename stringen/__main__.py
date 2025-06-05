@@ -36,6 +36,8 @@ def parse_args(arguments=None):
                         help='output hexadecimal string (uses -a/-A for case)')
     parser.add_argument('-r', '--entropy', metavar='STRING',
                         help='calculate entropies for STRING and exit')
+    parser.add_argument('-c', '--clean', action='store_true',
+                        help='display only the generated password or entropy')
     parser.add_argument('length', type=positive_int, nargs='?', default=12,
                         help='length of the generated string')
     return parser.parse_args(arguments), parser
@@ -107,6 +109,9 @@ def main():
         text_length = len(args.entropy)
         sh_entropy = shannon_entropy(args.entropy)
         pw_entropy = password_entropy(args.entropy)
+        if args.clean:
+            print(f"{pw_entropy:.2f}")
+            return
         print(f"Length: {text_length}")
         print(f"Shannon entropy: {sh_entropy:.2f} bits")
         print(f"Password entropy: {pw_entropy:.2f} bits")
@@ -115,6 +120,9 @@ def main():
     if not charset:
         parser.error('No character set selected. Use -a, -A, -i or -x')
     result = generate_string(args.length, charset)
+    if args.clean:
+        print(result)
+        return
     result_length = len(result)
     sh_entropy = shannon_entropy(result)
     pw_entropy = password_entropy(result)
