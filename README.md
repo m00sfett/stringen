@@ -15,25 +15,23 @@ python -m stringen --help
 
 ## Features
 
+- Calculate the length and entropies for an arbitrary string via `-r STRING`
+- Configurable string length via positional `NUMBER`
+- Optional Binary output (`-b`/`-2`/`--bin`)
+- Optional Octal output (`-o`/`-8`/`--oct`)
+- Optional digits (`-i`, `-10`, `--dec`)
 - Optional lowercase letters (`-a`)
 - Optional uppercase letters (`-A`)
-- Optional digits (`-i`, `-10`, `--dec`)
-- Binary output (`-b`/`-2`/`--bin`)
-- Octal output (`-o`/`-8`/`--oct`)
-- Hexadecimal output (`-x`/`-16`/`--hex`) respecting `-a`/`-A` for case
-- Optional special characters (`-s [STRING|FILE]`)
-- Help available via `-h`/`--help`
-- Version information via `-V`/`--version`
-- Configurable string length via positional `NUMBER`
-- Displays length, Shannon and password entropy of the generated string
-- Calculate the length and entropies for an arbitrary string via `-r STRING`
-- Clean output with `-c` for scripting
-- Hexadecimal mode uses random case when `-a` and `-A` are both omitted or both
-  present
-- Displays the recognized numeric base of the output
+- Optional Hexadecimal output (`-x`/`-16`/`--hex`) respecting `-a`/`-A` for case
+- Hexadecimal mode uses random case when `-a` and `-A` are both omitted or both present
+- Optional special characters (`-s [STRING|CHARSET_FILE]`)
 - Read input or output from a file via `-f [FILE]`
 - Aborts when the provided string contains non-printable characters
-- The `NUMBER` argument must be a positive integer
+- Displays length, Shannon and password entropy
+- Displays the recognized numeric base of the output
+- Clean output with `-c` for scripting
+- Help available via `-h`/`--help`
+- Version information via `-V`/`--version`
 
 ## Usage
 
