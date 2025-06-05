@@ -1,4 +1,4 @@
-# stringen (v0.3.1)
+# stringen (v0.3.2)
 
 A simple command line string generator written in Python. If no character set
 is selected, lowercase letters, uppercase letters and digits are used by
@@ -30,6 +30,8 @@ python -m stringen --help
 - Hexadecimal mode uses random case when `-a` and `-A` are both omitted or both
   present
 - Displays the recognized numeric base of the output
+- Read input or output from a file via `-f [FILE]`
+- Aborts when the provided string contains non-printable characters
 - The `NUMBER` argument must be a positive integer
 
 ## Usage
@@ -43,6 +45,7 @@ python -m stringen -o 12
 python -m stringen -r hr5A8nPf5
 python -m stringen -x 32
 python -m stringen -c -r hr5A8nPf5
+python -m stringen -f output.txt 12
 ```
 
 ## Entropy
