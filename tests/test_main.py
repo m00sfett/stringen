@@ -168,7 +168,7 @@ def test_main_base_output_entropy(monkeypatch, capsys):
     main()
     captured = capsys.readouterr()
     lines = captured.out.strip().splitlines()
-    assert lines[-1] == 'Recognized base: 2'
+    assert lines[-1] == 'Base: 2'
 
 
 def test_main_base_output_generation(monkeypatch, capsys):
@@ -190,6 +190,20 @@ def test_main_entropy_from_file(monkeypatch, tmp_path, capsys):
     lines = [l for l in captured.out.strip().splitlines() if l]
     assert 'Recognized base: 16' in lines
     assert 'Recognized base: 2' in lines
+
+
+def test_main_entropy_from_file_clean(monkeypatch, tmp_path, capsys):
+    """With -c, strings from the file are hidden but stats are shown."""
+    p = tmp_path / 'input.txt'
+    p.write_text('abc\n\n1010\n')
+    monkeypatch.setattr(sys, 'argv', ['stringen', '-c', '-r', '-f', str(p)])
+    main()
+    captured = capsys.readouterr()
+    lines = [l for l in captured.out.strip().splitlines() if l]
+    assert lines[0].startswith('read from file')
+    assert 'Line: 1' in lines
+    assert 'Line: 2' in lines
+    assert 'string:' not in captured.out
 
 
 def test_main_generation_to_file(monkeypatch, tmp_path, capsys):

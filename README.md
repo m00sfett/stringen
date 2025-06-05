@@ -1,4 +1,4 @@
-# stringen (v0.4.0)
+# stringen (v0.4.1)
 
 A simple command line string generator written in Python. If no character set
 is selected, lowercase letters, uppercase letters and digits are used by
