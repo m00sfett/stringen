@@ -10,6 +10,7 @@ from . import __version__
 from .utils import (
     build_charset,
     generate_string,
+    generate_string_mixed,
     recognized_base,
     password_entropy,
     positive_int,
@@ -206,15 +207,19 @@ def main() -> None:
         return
 
     try:
-        charset = build_charset(args)
+        groups = build_charset(args, as_groups=True)
     except argparse.ArgumentTypeError as exc:
         parser.error(str(exc))
+    charset = "".join(groups)
     if not charset:
         parser.error(
             "No character set selected. Use -a, -A, -i/-10, -b, -o or -x"
         )
 
-    result = generate_string(args.length, charset)
+    if len(groups) > 1:
+        result = generate_string_mixed(args.length, groups)
+    else:
+        result = generate_string(args.length, charset)
     if args.file is not None:
         try:
             with open(args.file, "w", encoding="utf-8") as fh:

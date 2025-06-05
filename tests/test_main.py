@@ -204,6 +204,14 @@ def test_main_generation_to_file(monkeypatch, tmp_path, capsys):
     assert 'Length:' in lines[0]
 
 
+def test_main_mixed_special_chars(monkeypatch, capsys):
+    """Generated strings include at least one special character when -s is used."""
+    monkeypatch.setattr(sys, 'argv', ['stringen', '-c', '-a', '-A', '-i', '-s', '!@', '8'])
+    main()
+    generated = capsys.readouterr().out.strip()
+    assert any(ch in '!@' for ch in generated)
+
+
 def test_main_illegal_char_cli(monkeypatch):
     """Non printable characters in -r abort the program."""
     monkeypatch.setattr(sys, 'argv', ['stringen', '-r', 'abc\x01'])
