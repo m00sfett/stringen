@@ -18,7 +18,7 @@ def parse_args():
     parser.add_argument('-h', '--hex', action='store_true',
                         help='output hexadecimal string (uses -a/-A for case)')
     parser.add_argument('-r', '--entropy', metavar='STRING',
-                        help='calculate entropy for STRING and exit')
+                        help='calculate entropies for STRING and exit')
     parser.add_argument('length', type=int, nargs='?', default=12,
                         help='length of the generated string')
     return parser.parse_args(), parser
@@ -44,8 +44,8 @@ def build_charset(args):
     return charset
 
 
-def generate_password(length, charset):
-    """Generate password of given length from charset using secrets."""
+def generate_string(length, charset):
+    """Generate string of given length from charset using secrets."""
     return ''.join(secrets.choice(charset) for _ in range(length))
 
 
@@ -89,10 +89,12 @@ def main():
     charset = build_charset(args)
     if not charset:
         parser.error('No character set selected. Use -a, -A, -i or -h')
-    password = generate_password(args.length, charset)
-    entropy = shannon_entropy(password)
-    print(password)
-    print(f"Entropy: {entropy:.2f} bits")
+    result = generate_string(args.length, charset)
+    sh_entropy = shannon_entropy(result)
+    pw_entropy = password_entropy(result)
+    print(result)
+    print(f"Shannon entropy: {sh_entropy:.2f} bits")
+    print(f"Password entropy: {pw_entropy:.2f} bits")
 
 
 if __name__ == '__main__':
