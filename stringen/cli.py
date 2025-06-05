@@ -100,8 +100,10 @@ def parse_args(
     parser.add_argument(
         "-r",
         "--entropy",
+        nargs="?",
+        const="",
         metavar="STRING",
-        help="calculate entropies for STRING and exit",
+        help="calculate entropies for STRING or each line in FILE",
     )
     parser.add_argument(
         "-c",
@@ -131,7 +133,15 @@ def parse_args(
         default=12,
         help="length of the generated string",
     )
-    return parser.parse_args(arguments), parser
+    if arguments is None:
+        arguments = sys.argv[1:]
+    processed: list[str] = []
+    for arg in arguments:
+        if arg == "-rf":
+            processed.extend(["-r", "-f"])
+        else:
+            processed.append(arg)
+    return parser.parse_args(processed), parser
 
 
 def main() -> None:
@@ -142,17 +152,22 @@ def main() -> None:
     logger.setLevel(logging.INFO)
     args, parser = parse_args()
     if args.entropy is not None and args.file is None:
+        if args.entropy == "":
+            parser.error("missing string")
         if any(ord(ch) < 32 or ord(ch) > 126 for ch in args.entropy):
             parser.error("illegal characters")
         text_length = len(args.entropy)
         sh_entropy = shannon_entropy(args.entropy)
+        sh_total = sh_entropy * text_length
         pw_entropy = password_entropy(args.entropy)
         base = recognized_base(args.entropy)
         if args.clean:
             logger.info(f"{pw_entropy:.2f}")
             return
         logger.info(f"Length: {text_length}")
-        logger.info(f"Shannon entropy: {sh_entropy:.2f} bits")
+        logger.info(
+            f"Shannon entropy: {sh_entropy:.2f} bits/char ({sh_total:.2f} bits total)"
+        )
         logger.info(f"Password entropy: {pw_entropy:.2f} bits")
         logger.info(f"Recognized base: {base}")
         return
@@ -163,20 +178,31 @@ def main() -> None:
                 lines = [line.rstrip("\n") for line in fh]
         except OSError as exc:
             parser.error(str(exc))
+        if args.clean:
+            for line in lines:
+                if any(ord(ch) < 32 or ord(ch) > 126 for ch in line):
+                    parser.error("illegal characters")
+                pw_entropy = password_entropy(line)
+                logger.info(f"{pw_entropy:.2f}")
+            return
+        logger.info(f"read from file {args.file}:")
         for line in lines:
             if any(ord(ch) < 32 or ord(ch) > 126 for ch in line):
                 parser.error("illegal characters")
             text_length = len(line)
             sh_entropy = shannon_entropy(line)
+            sh_total = sh_entropy * text_length
             pw_entropy = password_entropy(line)
             base = recognized_base(line)
-            if args.clean:
-                logger.info(f"{pw_entropy:.2f}")
-            else:
-                logger.info(f"Length: {text_length}")
-                logger.info(f"Shannon entropy: {sh_entropy:.2f} bits")
-                logger.info(f"Password entropy: {pw_entropy:.2f} bits")
-                logger.info(f"Recognized base: {base}")
+            logger.info(f"string: {line}")
+            logger.info(
+                f"Length: {text_length}"
+            )
+            logger.info(
+                f"Shannon entropy: {sh_entropy:.2f} bits/char ({sh_total:.2f} bits total)"
+            )
+            logger.info(f"Password entropy: {pw_entropy:.2f} bits")
+            logger.info(f"Recognized base: {base}")
         return
 
     try:
@@ -199,10 +225,13 @@ def main() -> None:
             return
         result_length = len(result)
         sh_entropy = shannon_entropy(result)
+        sh_total = sh_entropy * result_length
         pw_entropy = password_entropy(result)
         base = recognized_base(result)
         logger.info(f"Length: {result_length}")
-        logger.info(f"Shannon entropy: {sh_entropy:.2f} bits")
+        logger.info(
+            f"Shannon entropy: {sh_entropy:.2f} bits/char ({sh_total:.2f} bits total)"
+        )
         logger.info(f"Password entropy: {pw_entropy:.2f} bits")
         logger.info(f"Recognized base: {base}")
         return
@@ -211,11 +240,14 @@ def main() -> None:
         return
     result_length = len(result)
     sh_entropy = shannon_entropy(result)
+    sh_total = sh_entropy * result_length
     pw_entropy = password_entropy(result)
     base = recognized_base(result)
     logger.info(result)
     logger.info(f"Length: {result_length}")
-    logger.info(f"Shannon entropy: {sh_entropy:.2f} bits")
+    logger.info(
+        f"Shannon entropy: {sh_entropy:.2f} bits/char ({sh_total:.2f} bits total)"
+    )
     logger.info(f"Password entropy: {pw_entropy:.2f} bits")
     logger.info(f"Recognized base: {base}")
 

@@ -78,12 +78,16 @@ python -m stringen -f output.txt 12
 # > (writes e.g. W8YzKp3N2dFq to output.txt)
 
 # Read lines from a file to calculate their entropies
-python -m stringen -r ignored -f input.txt
-# > input.txt:
-# > password123
-# > qwerty!
-# > ...
-# > Entropy results printed per line
+python -m stringen -r -f input.txt
+# > read from file input.txt:
+# > string: password123
+# > Length: 11
+# > Shannon entropy: 3.18 bits/char (34.94 bits total)
+# > Password entropy: 65.79 bits
+# > string: qwerty!
+# > Length: 7
+# > Shannon entropy: 2.80 bits/char (19.60 bits total)
+# > Password entropy: 42.09 bits
 ```
 
 ## Entropy
