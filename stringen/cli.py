@@ -12,6 +12,7 @@ from .utils import (
     generate_string,
     generate_string_mixed,
     recognized_base,
+    character_set_size,
     password_entropy,
     positive_int,
     shannon_entropy,
@@ -164,6 +165,7 @@ def main() -> None:
         sh_total = sh_entropy * text_length
         pw_entropy = password_entropy(args.entropy)
         base = recognized_base(args.entropy)
+        charset_size = character_set_size(args.entropy)
         if args.clean:
             logger.info(f"{pw_entropy:.2f}")
             return
@@ -172,7 +174,7 @@ def main() -> None:
             f"Shannon entropy: {sh_entropy:.2f} bits/char ({sh_total:.2f} bits total)"
         )
         logger.info(f"Password entropy: {pw_entropy:.2f} bits")
-        logger.info(f"Base: {base}")
+        logger.info(f"Base: {base} (Character Set: {charset_size})")
         return
 
     if args.file is not None and args.entropy is not None:
@@ -199,8 +201,11 @@ def main() -> None:
             logger.info(
                 f"Shannon entropy: {sh_entropy:.2f} bits/char ({sh_total:.2f} bits total)"
             )
+            charset_size = character_set_size(line)
             logger.info(f"Password entropy: {pw_entropy:.2f} bits")
-            logger.info(f"Recognized base: {base}")
+            logger.info(
+                f"Recognized base: {base} (Character Set: {charset_size})"
+            )
         return
 
     try:
@@ -230,12 +235,15 @@ def main() -> None:
         sh_total = sh_entropy * result_length
         pw_entropy = password_entropy(result)
         base = recognized_base(result)
+        charset_size = character_set_size(result)
         logger.info(f"Length: {result_length}")
         logger.info(
             f"Shannon entropy: {sh_entropy:.2f} bits/char ({sh_total:.2f} bits total)"
         )
         logger.info(f"Password entropy: {pw_entropy:.2f} bits")
-        logger.info(f"Recognized base: {base}")
+        logger.info(
+            f"Recognized base: {base} (Character Set: {charset_size})"
+        )
         return
     if args.clean:
         logger.info(result)
@@ -245,11 +253,12 @@ def main() -> None:
     sh_total = sh_entropy * result_length
     pw_entropy = password_entropy(result)
     base = recognized_base(result)
+    charset_size = character_set_size(result)
     logger.info(result)
     logger.info(f"Length: {result_length}")
     logger.info(
         f"Shannon entropy: {sh_entropy:.2f} bits/char ({sh_total:.2f} bits total)"
     )
     logger.info(f"Password entropy: {pw_entropy:.2f} bits")
-    logger.info(f"Recognized base: {base}")
+    logger.info(f"Recognized base: {base} (Character Set: {charset_size})")
 

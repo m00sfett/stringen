@@ -128,6 +128,27 @@ def recognized_base(text: str) -> int:
     return 0
 
 
+def character_set_size(text: str) -> int:
+    """Return the size of the character set present in ``text``."""
+    if not text:
+        return 0
+    base = recognized_base(text)
+    if base:
+        return base
+
+    size = 0
+    if any(c.islower() for c in text):
+        size += 26
+    if any(c.isupper() for c in text):
+        size += 26
+    if any(c.isdigit() for c in text):
+        size += 10
+    specials = {c for c in text if not c.isalnum()}
+    size += len(specials)
+
+    return size
+
+
 def password_entropy(text: str) -> float:
     """Return password entropy based on character set size and length."""
     if not text:
