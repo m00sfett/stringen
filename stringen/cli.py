@@ -143,6 +143,18 @@ def parse_args(
             # Allow the short option combination "-rf" to behave like
             # passing "-r" and "-f" separately.
             processed.extend(["-r", "-f"])
+        elif (
+            arg.startswith("-")
+            and not arg.startswith("--")
+            and len(arg) > 2
+            and arg.endswith("s")
+        ):
+            # Handle clusters like "-aAis" where "-s" is specified without
+            # its optional argument. Split the other flags and add an empty
+            # argument so -s uses the default special character set.
+            for opt in arg[1:-1]:
+                processed.append(f"-{opt}")
+            processed.extend(["-s", ""])
         else:
             processed.append(arg)
     return parser.parse_args(processed), parser

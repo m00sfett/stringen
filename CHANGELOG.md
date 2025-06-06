@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.2
+
+- Short option clusters ending with `-s` now load the default special
+  characters when no argument is provided
+
 ## 0.4.1
 
 - Skip empty lines when calculating entropy from files
