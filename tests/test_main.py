@@ -111,6 +111,23 @@ def test_spec_default_file():
     assert charset == default_chars
 
 
+def test_spec_cluster_default_file():
+    """Short option clusters ending with -s use the default file."""
+    args, _ = parse_args(['-aAis', '8'])
+    charset = build_charset(args)
+    default_path = (
+        Path(__file__).resolve().parent.parent
+        / 'stringen'
+        / 'charsets'
+        / 'special_charset_default.txt'
+    )
+    default_chars = default_path.read_text().strip()
+    for ch in default_chars:
+        assert ch in charset
+    assert args.spec == ''
+    assert args.length == 8
+
+
 def test_clean_flag_parsing():
     """The -c flag is parsed correctly."""
     args, _ = parse_args(['-c'])
